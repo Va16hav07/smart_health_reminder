@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'UserInfoScreen.dart';
 
@@ -18,10 +19,10 @@ class _SignupScreenState extends State<SignupScreen> {
   final _confirmPasswordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
-  bool _isLoading = false; // Loading state
+  bool _isLoading = false;
 
   /// Function to handle Email/Password Signup
-  void _signUpWithEmail() async {
+  Future<void> _signUpWithEmail() async {
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -30,15 +31,26 @@ class _SignupScreenState extends State<SignupScreen> {
         return;
       }
 
-      setState(() {
-        _isLoading = true; // Show loading indicator
-      });
+      setState(() => _isLoading = true);
 
       try {
+        UserCredential userCredential =
         await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text,
         );
+
+        // Store user data in Firestore
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userCredential.user!.uid)
+            .set({
+          'firstName': _firstNameController.text.trim(),
+          'lastName': _lastNameController.text.trim(),
+          'email': _emailController.text.trim(),
+          'uid': userCredential.user!.uid,
+          'profilePic': "", // Placeholder for future profile picture
+        });
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Signup successful!')),
@@ -55,9 +67,7 @@ class _SignupScreenState extends State<SignupScreen> {
         );
       }
 
-      setState(() {
-        _isLoading = false; // Hide loading indicator
-      });
+      setState(() => _isLoading = false);
     }
   }
 
@@ -65,16 +75,36 @@ class _SignupScreenState extends State<SignupScreen> {
   Future<void> _signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-
       if (googleUser == null) return; // User canceled sign-in
 
-      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final GoogleSignInAuthentication googleAuth =
+      await googleUser.authentication;
       final OAuthCredential credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
+      UserCredential userCredential =
       await FirebaseAuth.instance.signInWithCredential(credential);
+      User? user = userCredential.user;
+
+      if (user != null) {
+        // Check if user data already exists
+        DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (!userDoc.exists) {
+          await FirebaseFirestore.instance.collection('users').doc(user.uid).set({
+            'firstName': user.displayName?.split(" ").first ?? "",
+            'lastName': user.displayName?.split(" ").last ?? "",
+            'email': user.email,
+            'uid': user.uid,
+            'profilePic': user.photoURL ?? "",
+          });
+        }
+      }
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Google Sign-In Successful!')),

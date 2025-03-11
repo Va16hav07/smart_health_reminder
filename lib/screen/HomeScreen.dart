@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'Profile.dart'; // Import Profile Screen
 import 'ProgressScreen.dart'; // Import Progress Screen
 import 'ChallengesScreen.dart'; // Import Challenges Screen
@@ -12,23 +14,41 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
+  String firstName = "User"; // Default name
+  String profilePicUrl = ""; // Default profile picture
 
-  // List of screens to navigate to
-  final List<Widget> _screens = [
-    HomeContent(),
-    ProgressScreen(),
-    ChallengesScreen(),
-    ProfileScreen(),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserData();
+  }
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+  // Fetch user first name and profile picture from Firestore
+  Future<void> _fetchUserData() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null) {
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
+      if (userDoc.exists) {
+        setState(() {
+          firstName = userDoc['firstName'] ?? "User"; // Fetch first name
+          profilePicUrl = userDoc['profilePic'] ?? ""; // Fetch profile picture
+        });
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final List<Widget> _screens = [
+      HomeContent(firstName: firstName, profilePicUrl: profilePicUrl),
+      ProgressScreen(),
+      ChallengesScreen(),
+      ProfileScreen(),
+    ];
+
     return Scaffold(
       backgroundColor: Colors.grey[100],
       body: _screens[_selectedIndex],
@@ -36,7 +56,11 @@ class _HomeScreenState extends State<HomeScreen> {
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: "Progress"),
@@ -50,6 +74,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
 // Extracted Home Content Widget
 class HomeContent extends StatelessWidget {
+  final String firstName;
+  final String profilePicUrl;
+
+  const HomeContent({super.key, required this.firstName, required this.profilePicUrl});
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -72,7 +101,9 @@ class HomeContent extends StatelessWidget {
                   child: Row(
                     children: [
                       CircleAvatar(
-                        backgroundImage: NetworkImage("https://www.flaticon.com/free-icon/profile_7915522"),
+                        backgroundImage: profilePicUrl.isNotEmpty
+                            ? NetworkImage(profilePicUrl)
+                            : const AssetImage('assets/default_profile.jpg') as ImageProvider, // Default image
                         radius: 22,
                       ),
                       const SizedBox(width: 10),
@@ -80,7 +111,7 @@ class HomeContent extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           const Text("Good morning", style: TextStyle(fontSize: 14, color: Colors.grey)),
-                          const Text("Alex", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          Text(firstName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), // Updated to show fetched name
                         ],
                       ),
                     ],

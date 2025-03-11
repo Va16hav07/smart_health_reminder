@@ -36,13 +36,11 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Appearance Settings')),
+      appBar: AppBar(title: const Text('Appearance')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Dark Mode Toggle
             SwitchListTile(
               title: const Text('Dark Mode'),
               value: _isDarkMode,
@@ -53,7 +51,6 @@ class _AppearanceScreenState extends State<AppearanceScreen> {
                 _savePreferences();
               },
             ),
-
             const SizedBox(height: 20),
             const Text('Accent Color', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             const SizedBox(height: 10),
