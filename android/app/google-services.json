@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "658333224351",
+    "project_id": "smarthealth-e25a7",
+    "storage_bucket": "smarthealth-e25a7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:658333224351:android:99c37fcd47c2cc57ccc1aa",
+        "android_client_info": {
+          "package_name": "com.example.smart_health_reminder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDGWFBDlReMSWOAkUI0iegUVamG2i2A_g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
