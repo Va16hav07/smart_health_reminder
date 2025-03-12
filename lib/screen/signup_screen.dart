@@ -21,7 +21,6 @@ class _SignupScreenState extends State<SignupScreen> {
 
   bool _isLoading = false;
 
-  /// Function to handle Email/Password Signup
   Future<void> _signUpWithEmail() async {
     if (_formKey.currentState!.validate()) {
       if (_passwordController.text != _confirmPasswordController.text) {
@@ -40,7 +39,6 @@ class _SignupScreenState extends State<SignupScreen> {
           password: _passwordController.text,
         );
 
-        // Store user data in Firestore
         await FirebaseFirestore.instance
             .collection('users')
             .doc(userCredential.user!.uid)
@@ -49,14 +47,13 @@ class _SignupScreenState extends State<SignupScreen> {
           'lastName': _lastNameController.text.trim(),
           'email': _emailController.text.trim(),
           'uid': userCredential.user!.uid,
-          'profilePic': "", // Placeholder for future profile picture
+          'profilePic': "",
         });
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Signup successful!')),
         );
 
-        // Navigate to User Info Screen
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const UserInfoScreen()),
@@ -70,12 +67,10 @@ class _SignupScreenState extends State<SignupScreen> {
       setState(() => _isLoading = false);
     }
   }
-
-  /// Function to handle Google Sign-In
   Future<void> _signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return; // User canceled sign-in
+      if (googleUser == null) return;
 
       final GoogleSignInAuthentication googleAuth =
       await googleUser.authentication;
@@ -89,7 +84,6 @@ class _SignupScreenState extends State<SignupScreen> {
       User? user = userCredential.user;
 
       if (user != null) {
-        // Check if user data already exists
         DocumentSnapshot userDoc = await FirebaseFirestore.instance
             .collection('users')
             .doc(user.uid)
@@ -109,8 +103,6 @@ class _SignupScreenState extends State<SignupScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Google Sign-In Successful!')),
       );
-
-      // Navigate to User Info Screen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const UserInfoScreen()),
@@ -221,7 +213,6 @@ class _SignupScreenState extends State<SignupScreen> {
     );
   }
 
-  /// Reusable function for text fields
   Widget _buildTextField(
       TextEditingController controller,
       String label,

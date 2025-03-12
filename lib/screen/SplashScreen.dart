@@ -18,17 +18,15 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 
   Future<void> _checkLoginStatus() async {
-    await Future.delayed(const Duration(seconds: 2)); // Simulate a splash screen delay
+    await Future.delayed(const Duration(seconds: 2));
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      // User is logged in, go to home screen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
     } else {
-      // User is not logged in, go to login screen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const LoginScreen()),
@@ -40,7 +38,7 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return const Scaffold(
       body: Center(
-        child: CircularProgressIndicator(), // Show a loading spinner
+        child: CircularProgressIndicator(),
       ),
     );
   }

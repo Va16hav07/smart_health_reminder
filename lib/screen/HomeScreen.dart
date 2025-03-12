@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'Profile.dart'; // Import Profile Screen
-import 'ProgressScreen.dart'; // Import Progress Screen
-import 'ChallengesScreen.dart'; // Import Challenges Screen
+import 'Profile.dart';
+import 'ProgressScreen.dart';
+import 'ChallengesScreen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,8 +14,8 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
-  String firstName = "User"; // Default name
-  String profilePicUrl = ""; // Default profile picture
+  String firstName = "User";
+  String profilePicUrl = "";
 
   @override
   void initState() {
@@ -23,7 +23,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _fetchUserData();
   }
 
-  // Fetch user first name and profile picture from Firestore
   Future<void> _fetchUserData() async {
     User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
@@ -33,8 +32,8 @@ class _HomeScreenState extends State<HomeScreen> {
           .get();
       if (userDoc.exists) {
         setState(() {
-          firstName = userDoc['firstName'] ?? "User"; // Fetch first name
-          profilePicUrl = userDoc['profilePic'] ?? ""; // Fetch profile picture
+          firstName = userDoc['firstName'] ?? "User";
+          profilePicUrl = userDoc['profilePic'] ?? "";
         });
       }
     }
@@ -72,7 +71,6 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-// Extracted Home Content Widget
 class HomeContent extends StatelessWidget {
   final String firstName;
   final String profilePicUrl;
@@ -82,105 +80,105 @@ class HomeContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Greeting with Profile Picture
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const ProfileScreen()),
-                    );
-                  },
-                  child: Row(
-                    children: [
-                      CircleAvatar(
-                        backgroundImage: profilePicUrl.isNotEmpty
-                            ? NetworkImage(profilePicUrl)
-                            : const AssetImage('assets/default_profile.jpg') as ImageProvider, // Default image
-                        radius: 22,
-                      ),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text("Good morning", style: TextStyle(fontSize: 14, color: Colors.grey)),
-                          Text(firstName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), // Updated to show fetched name
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.notifications_outlined),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            // Today's Progress Section
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      const Text("Today's Progress", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                      Text("March 15, 2025", style: TextStyle(fontSize: 14, color: Colors.grey[600])),
-                    ],
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ProfileScreen()),
+                      );
+                    },
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          backgroundImage: profilePicUrl.isNotEmpty
+                              ? NetworkImage(profilePicUrl)
+                              : const AssetImage('assets/default_profile.jpg') as ImageProvider,
+                          radius: 22,
+                        ),
+                        const SizedBox(width: 10),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("Good morning", style: TextStyle(fontSize: 14, color: Colors.grey)),
+                            Text(firstName, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  const SizedBox(height: 15),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _progressItem(Icons.directions_walk, "Steps", "6,542", Colors.blue),
-                      _progressItem(Icons.water_drop, "Water", "1.2L", Colors.lightBlueAccent),
-                      _progressItem(Icons.accessibility, "Posture", "Good", Colors.blueAccent),
-                    ],
+                  IconButton(
+                    icon: const Icon(Icons.notifications_outlined),
+                    onPressed: () {},
                   ),
                 ],
               ),
-            ),
-            const SizedBox(height: 20),
 
-            // Health Goals Section
-            const Text("Health Goals", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            _goalProgress("Daily Steps", 0.65, Colors.blue),
-            _goalProgress("Water Intake", 0.40, Colors.teal),
-            _goalProgress("Posture Check", 0.80, Colors.blue),
-            const SizedBox(height: 20),
+              const SizedBox(height: 20),
 
-            // Quick Actions Section
-            const Text("Quick Actions", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            Row(
-              children: [
-                _quickAction("Set Reminder", Icons.notifications, Colors.blue),
-                const SizedBox(width: 15),
-                _quickAction("Add Water", Icons.add, Colors.teal),
-              ],
-            ),
-          ],
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        const Text("Today's Progress", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        Text("March 15, 2025", style: TextStyle(fontSize: 14, color: Colors.grey[600])),
+                      ],
+                    ),
+                    const SizedBox(height: 15),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        _progressItem(Icons.directions_walk, "Steps", "6,542", Colors.blue),
+                        _progressItem(Icons.water_drop, "Water", "1.2L", Colors.lightBlueAccent),
+                        _progressItem(Icons.accessibility, "Posture", "Good", Colors.blueAccent),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 20),
+
+              const Text("Health Goals", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              _goalProgress("Daily Steps", 0.65, Colors.blue),
+              _goalProgress("Water Intake", 0.40, Colors.teal),
+              _goalProgress("Posture Check", 0.80, Colors.blue),
+              const SizedBox(height: 20),
+
+              const Text("Quick Actions", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 10),
+              Row(
+                children: [
+                  _quickAction("Set Reminder", Icons.notifications, Colors.blue),
+                  const SizedBox(width: 15),
+                  _quickAction("Add Water", Icons.add, Colors.teal),
+                ],
+              ),
+              const SizedBox(height: 20),
+            ],
+          ),
         ),
       ),
     );
   }
+}
 
-  // Progress item widget
+
   Widget _progressItem(IconData icon, String title, String value, Color color) {
     return Column(
       children: [
@@ -193,7 +191,6 @@ class HomeContent extends StatelessWidget {
     );
   }
 
-  // Goal progress bar
   Widget _goalProgress(String title, double progress, Color color) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
@@ -214,7 +211,6 @@ class HomeContent extends StatelessWidget {
     );
   }
 
-  // Quick action buttons
   Widget _quickAction(String label, IconData icon, Color color) {
     return Expanded(
       child: Container(
@@ -240,4 +236,4 @@ class HomeContent extends StatelessWidget {
       ),
     );
   }
-}
+

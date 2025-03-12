@@ -12,7 +12,20 @@
           "package_name": "com.example.smart_health_reminder"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "658333224351-6bfpkrjskpn2mgrj8ddpdbvhdurl0jg1.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.smart_health_reminder",
+            "certificate_hash": "a1c16075fe8e4cf10c78b134b51ffbdccbb27e9c"
+          }
+        },
+        {
+          "client_id": "658333224351-gh33pni5vibvofce7bilq96k9pi36qn1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBDGWFBDlReMSWOAkUI0iegUVamG2i2A_g"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "658333224351-gh33pni5vibvofce7bilq96k9pi36qn1.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "658333224351-dbv882gq4for273ath004gde7r65r4n0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.smartHealthReminder"
+              }
+            }
+          ]
         }
       }
     }

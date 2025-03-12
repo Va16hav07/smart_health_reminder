@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'HomeScreen.dart'; // Import HomeScreen
+import 'HomeScreen.dart';
 
 class UserInfoScreen extends StatefulWidget {
   const UserInfoScreen({super.key});
@@ -32,11 +32,11 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: Colors.blue, // Header background color
-            hintColor: Colors.blue, // Accent color
+            primaryColor: Colors.blue,
+            hintColor: Colors.blue,
             colorScheme: const ColorScheme.light(primary: Colors.blue),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: Colors.blue), // Button text color
+              style: TextButton.styleFrom(foregroundColor: Colors.blue),
             ),
           ),
           child: child!,
@@ -47,7 +47,7 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
     if (pickedDate != null) {
       setState(() {
         _selectedDate = pickedDate;
-        _dobController.text = DateFormat('yyyy-MM-dd').format(pickedDate); // Formatting the date
+        _dobController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
       });
     }
   }
@@ -62,7 +62,6 @@ class _UserInfoScreenState extends State<UserInfoScreen> {
         const SnackBar(content: Text('Information saved successfully!')),
       );
 
-      // Navigate to HomeScreen
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const HomeScreen()),

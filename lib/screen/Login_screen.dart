@@ -19,20 +19,16 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _rememberMe = false;
   bool _isLoading = false;
 
-  /// Function to validate email format
   String? _validateEmail(String? email) {
     if (email == null || email.isEmpty) {
       return 'Please enter an email';
     }
-    // Proper email regex validation
     final RegExp emailRegex = RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$');
     if (!emailRegex.hasMatch(email)) {
       return 'Please enter a valid email address';
     }
     return null;
   }
-
-  /// Function to handle Email/Password Login
   Future<void> _signInWithEmail() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
@@ -74,11 +70,10 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
-  /// Function to handle Google Sign-In
   Future<void> _signInWithGoogle() async {
     try {
       final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return; // User canceled sign-in
+      if (googleUser == null) return;
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
       final OAuthCredential credential = GoogleAuthProvider.credential(
@@ -142,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     controller: _emailController,
                     label: 'Email',
                     icon: Icons.email,
-                    isEmail: true, // This will automatically enable email validation
+                    isEmail: true,
                   ),
                   CustomTextField(
                     controller: _passwordController,
